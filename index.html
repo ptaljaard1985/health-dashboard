@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pierre's Health Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); min-height: 100vh; }
+        .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); }
+        .streak-fire { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+    </style>
+</head>
+<body class="text-white p-6">
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold mb-2">Health Dashboard</h1>
+            <p class="text-gray-400">Last updated: 2026-02-02 08:05</p>
+        </div>
+
+        <!-- AI Summary -->
+        <div class="glass rounded-2xl p-6 mb-6 border-l-4 border-emerald-400">
+            <div class="flex justify-between items-center cursor-pointer" onclick="toggleSection('summary')">
+                <div class="flex items-center gap-3">
+                    <div class="text-2xl">🤖</div>
+                    <h2 class="text-xl font-semibold">Progress Summary</h2>
+                </div>
+                <span id="summary-toggle" class="text-gray-400">▶</span>
+            </div>
+            <div id="summary-content" class="mt-4 text-gray-300 leading-relaxed space-y-3" style="display: none;">
+                <p>The past week has been a solid one, with a balanced mix of 4 cardio workouts and 2 strength sessions. However, I would encourage you to strive for your weekly target of 4 cardio and 3 strength activities to ensure consistent progress.</p><p>Over the last 30 days, you have been diligent with your exercise routine, incorporating a variety of activities such as kettlebells, indoor cycling, and tennis. This diverse approach aligns well with your monthly goals and will help you maintain a well-rounded fitness regimen.</p><p>Your weight journey is progressing at a steady pace, with a total loss of 5.2 kg in the past 32 days. This rate of 1.13 kg per week puts you on track to reach your target weight of 82 kg by the end of 2026, provided you maintain your current discipline and commitment.</p>
+            </div>
+        </div>
+
+        <!-- This Week Progress -->
+        <div class="glass rounded-2xl p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">This Week</h2>
+            <div class="flex justify-between gap-2">
+                <div class="flex-1 text-center p-3 rounded-xl bg-green-500 ring-2 ring-white"><div class="text-xs text-gray-300">Mon</div><div class="text-lg">✓</div></div><div class="flex-1 text-center p-3 rounded-xl bg-gray-700 "><div class="text-xs text-gray-300">Tue</div><div class="text-lg"></div></div><div class="flex-1 text-center p-3 rounded-xl bg-gray-700 "><div class="text-xs text-gray-300">Wed</div><div class="text-lg"></div></div><div class="flex-1 text-center p-3 rounded-xl bg-gray-700 "><div class="text-xs text-gray-300">Thu</div><div class="text-lg"></div></div><div class="flex-1 text-center p-3 rounded-xl bg-gray-700 "><div class="text-xs text-gray-300">Fri</div><div class="text-lg"></div></div><div class="flex-1 text-center p-3 rounded-xl bg-gray-700 "><div class="text-xs text-gray-300">Sat</div><div class="text-lg"></div></div><div class="flex-1 text-center p-3 rounded-xl bg-gray-700 "><div class="text-xs text-gray-300">Sun</div><div class="text-lg"></div></div>
+            </div>
+        </div>
+
+        <!-- Calendar View -->
+        <div class="glass rounded-2xl p-6 mb-6">
+            <div class="flex justify-between items-center cursor-pointer" onclick="toggleSection('calendar')">
+                <h2 class="text-xl font-semibold">Calendar</h2>
+                <span id="calendar-toggle" class="text-gray-400">▶</span>
+            </div>
+            <div id="calendar-content" style="display: none;" class="mt-4">
+                <div class="flex justify-between items-center mb-4">
+                    <button onclick="prevMonth()" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition">← Prev</button>
+                    <h3 id="calendar-month-label" class="text-lg font-semibold"></h3>
+                    <button onclick="nextMonth()" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition">Next →</button>
+                </div>
+                <div class="grid grid-cols-7 gap-1 mb-2">
+                    <div class="text-center text-xs text-gray-500 py-1">Mon</div>
+                    <div class="text-center text-xs text-gray-500 py-1">Tue</div>
+                    <div class="text-center text-xs text-gray-500 py-1">Wed</div>
+                    <div class="text-center text-xs text-gray-500 py-1">Thu</div>
+                    <div class="text-center text-xs text-gray-500 py-1">Fri</div>
+                    <div class="text-center text-xs text-gray-500 py-1">Sat</div>
+                    <div class="text-center text-xs text-gray-500 py-1">Sun</div>
+                </div>
+                <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
+            </div>
+        </div>
+
+        <!-- Last 7 Days Summary -->
+        <div class="glass rounded-2xl p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Last 7 Days</h2>
+            <div class="grid grid-cols-5 gap-4 mb-4">
+                <div class="text-center">
+                    <div class="text-3xl mb-1">🏃</div>
+                    <div class="text-3xl font-bold text-green-400">4<span class="text-lg text-gray-400">/4</span></div>
+                    <div class="text-gray-400 text-xs">Cardio</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">🏋️</div>
+                    <div class="text-3xl font-bold text-yellow-400">2<span class="text-lg text-gray-400">/3</span></div>
+                    <div class="text-gray-400 text-xs">Strength</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">⏱️</div>
+                    <div class="text-3xl font-bold text-green-400">3.7</div>
+                    <div class="text-gray-400 text-xs">Hours</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">⚖️</div>
+                    <div class="text-3xl font-bold text-gray-400">--</div>
+                    <div class="text-gray-400 text-xs">kg</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">😴</div>
+                    <div class="text-3xl font-bold text-purple-400">2</div>
+                    <div class="text-gray-400 text-xs">Rest Days</div>
+                </div>
+            </div>
+            <div class="border-t border-white/10 pt-4">
+                <div class="flex justify-between items-center cursor-pointer" onclick="toggleSection('7d-activities')">
+                    <span class="text-sm text-gray-400">Activities</span>
+                    <span id="7d-activities-toggle" class="text-gray-400">▶</span>
+                </div>
+                <div id="7d-activities-content" class="space-y-3 mt-3" style="display: none;">
+                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+            <div>
+                <div class="font-medium">Strength</div>
+                <div class="text-sm text-gray-400">Mon 02 Feb</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">30.1 min</div>
+                <div class="text-xs text-gray-500">Kettlebells</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+            <div>
+                <div class="font-medium">Indoor Cycling</div>
+                <div class="text-sm text-gray-400">Sun 01 Feb</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">31 min</div>
+                <div class="text-xs text-gray-500">Indoor Cycle</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+            <div>
+                <div class="font-medium">Strength</div>
+                <div class="text-sm text-gray-400">Sat 31 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">28.6 min</div>
+                <div class="text-xs text-gray-500">Kettlebells</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+            <div>
+                <div class="font-medium">Indoor Cycling</div>
+                <div class="text-sm text-gray-400">Sat 31 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">30.6 min</div>
+                <div class="text-xs text-gray-500">Indoor Cycle</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+            <div>
+                <div class="font-medium">Salt Rock Tennis</div>
+                <div class="text-sm text-gray-400">Thu 29 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">43.4 min</div>
+                <div class="text-xs text-gray-500">Tennis</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+            <div>
+                <div class="font-medium">Salt Rock Tennis</div>
+                <div class="text-sm text-gray-400">Wed 28 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">60.1 min</div>
+                <div class="text-xs text-gray-500">Tennis</div>
+            </div>
+        </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Summaries (dynamically generated) -->
+        
+        <div class="glass rounded-2xl p-6 mb-6">
+            <div class="flex justify-between items-center cursor-pointer" onclick="toggleSection('month-2026-2')">
+                <h2 class="text-xl font-semibold">February 2026</h2>
+                <span id="month-2026-2-toggle" class="text-gray-400">▼</span>
+            </div>
+            <div id="month-2026-2-content" class="grid grid-cols-5 gap-4 mt-4" style="display: grid">
+                <div class="text-center">
+                    <div class="text-3xl mb-1">🏃</div>
+                    <div class="text-3xl font-bold text-red-400">1<span class="text-lg text-gray-400">/16</span></div>
+                    <div class="text-gray-400 text-xs">Cardio</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">🏋️</div>
+                    <div class="text-3xl font-bold text-red-400">1<span class="text-lg text-gray-400">/10</span></div>
+                    <div class="text-gray-400 text-xs">Strength</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">⏱️</div>
+                    <div class="text-3xl font-bold text-green-400">1</div>
+                    <div class="text-gray-400 text-xs">Hours</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">⚖️</div>
+                    <div class="text-3xl font-bold text-red-400">+0.8</div>
+                    <div class="text-gray-400 text-xs">kg</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">😴</div>
+                    <div class="text-3xl font-bold text-purple-400">0</div>
+                    <div class="text-gray-400 text-xs">Rest Days</div>
+                </div>
+            </div>
+        </div>
+        <div class="glass rounded-2xl p-6 mb-6">
+            <div class="flex justify-between items-center cursor-pointer" onclick="toggleSection('month-2026-1')">
+                <h2 class="text-xl font-semibold">January 2026</h2>
+                <span id="month-2026-1-toggle" class="text-gray-400">▶</span>
+            </div>
+            <div id="month-2026-1-content" class="grid grid-cols-5 gap-4 mt-4" style="display: none">
+                <div class="text-center">
+                    <div class="text-3xl mb-1">🏃</div>
+                    <div class="text-3xl font-bold text-green-400">22<span class="text-lg text-gray-400">/16</span></div>
+                    <div class="text-gray-400 text-xs">Cardio</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">🏋️</div>
+                    <div class="text-3xl font-bold text-yellow-400">9<span class="text-lg text-gray-400">/10</span></div>
+                    <div class="text-gray-400 text-xs">Strength</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">⏱️</div>
+                    <div class="text-3xl font-bold text-green-400">22</div>
+                    <div class="text-gray-400 text-xs">Hours</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">⚖️</div>
+                    <div class="text-3xl font-bold text-green-400">-5.5</div>
+                    <div class="text-gray-400 text-xs">kg</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">😴</div>
+                    <div class="text-3xl font-bold text-purple-400">9</div>
+                    <div class="text-gray-400 text-xs">Rest Days</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Weight Chart -->
+        <div class="glass rounded-2xl p-6 mb-6">
+            <div class="flex justify-between items-start mb-4">
+                <div class="flex items-center gap-3">
+                    <h2 class="text-xl font-semibold">Weight Progress (from Jan 1, 2026)</h2>
+                    <button id="zoomToggle" onclick="toggleWeightZoom()" class="px-3 py-1 text-xs rounded-full bg-white/10 hover:bg-white/20 transition">🔍 Zoom Out</button>
+                </div>
+                <div class="flex gap-8 items-start">
+                    <div class="text-right">
+                        <div class="text-4xl font-bold text-green-400">1.14 <span class="text-lg text-gray-400">kg/wk</span></div>
+                        <div class="text-sm text-gray-400">avg since Jan 1</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-4xl font-bold text-green-400">4.7 <span class="text-lg text-gray-400">kg</span></div>
+                        <div class="text-sm text-gray-400">lost (30d)</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-4xl font-bold text-emerald-400">92.3 <span class="text-lg text-gray-400">kg</span></div>
+                        <div class="text-sm text-gray-400">current</div>
+                    </div>
+                </div>
+            </div>
+            <canvas id="weightChart" height="100"></canvas>
+            <div class="border-t border-white/10 pt-4 mt-4">
+                <div class="flex justify-between items-center cursor-pointer" onclick="toggleSection('weighins')">
+                    <span class="text-sm text-gray-400">Weigh-ins (last 7 days)</span>
+                    <span id="weighins-toggle" class="text-gray-400">▶</span>
+                </div>
+                <div id="weighins-content" class="space-y-2 mt-3" style="display: none;">
+                    <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+            <span class="text-gray-400 text-sm">Mon 02 Feb</span>
+            <div class="flex items-center gap-3">
+                <span class="text-red-400">↑ 1.3</span>
+                <span class="font-medium">92.3 kg</span>
+            </div>
+        </div><div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+            <span class="text-gray-400 text-sm">Sun 01 Feb</span>
+            <div class="flex items-center gap-3">
+                <span class="text-green-400">↓ 0.5</span>
+                <span class="font-medium">91 kg</span>
+            </div>
+        </div><div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+            <span class="text-gray-400 text-sm">Sat 31 Jan</span>
+            <div class="flex items-center gap-3">
+                <span class="text-green-400">↓ 0.9</span>
+                <span class="font-medium">91.5 kg</span>
+            </div>
+        </div><div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+            <span class="text-gray-400 text-sm">Thu 29 Jan</span>
+            <div class="flex items-center gap-3">
+                <span class="text-red-400">↑ 0.1</span>
+                <span class="font-medium">92.4 kg</span>
+            </div>
+        </div><div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+            <span class="text-gray-400 text-sm">Wed 28 Jan</span>
+            <div class="flex items-center gap-3">
+                <span class="text-gray-400">→ 0</span>
+                <span class="font-medium">92.3 kg</span>
+            </div>
+        </div><div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+            <span class="text-gray-400 text-sm">Tue 27 Jan</span>
+            <div class="flex items-center gap-3">
+                
+                <span class="font-medium">92.3 kg</span>
+            </div>
+        </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2026 Year to Date -->
+        <div class="glass rounded-2xl p-6 mb-6">
+            <div class="flex justify-between items-center cursor-pointer" onclick="toggleSection('ytd')">
+                <h2 class="text-xl font-semibold">2026 Year to Date</h2>
+                <span id="ytd-toggle" class="text-gray-400">▼</span>
+            </div>
+            <div id="ytd-content" class="grid grid-cols-5 gap-4 mt-4">
+                <div class="text-center">
+                    <div class="text-3xl mb-1">🏃</div>
+                    <div class="text-3xl font-bold text-blue-400">6</div>
+                    <div class="text-gray-400 text-xs">Running</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">🚴</div>
+                    <div class="text-3xl font-bold text-green-400">7</div>
+                    <div class="text-gray-400 text-xs">Cycling</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">🥾</div>
+                    <div class="text-3xl font-bold text-yellow-400">3</div>
+                    <div class="text-gray-400 text-xs">Walk/Hike</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">🎾</div>
+                    <div class="text-3xl font-bold text-pink-400">7</div>
+                    <div class="text-gray-400 text-xs">Tennis/Padel</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-1">🏋️</div>
+                    <div class="text-3xl font-bold text-orange-400">10</div>
+                    <div class="text-gray-400 text-xs">Strength</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full Activity Log -->
+        <div class="glass rounded-2xl p-6 mb-6">
+            <div class="flex justify-between items-center cursor-pointer" onclick="toggleSection('activity-log')">
+                <h2 class="text-xl font-semibold">Activity Log (from Jan 2026)</h2>
+                <span id="activity-log-toggle" class="text-gray-400">▶</span>
+            </div>
+            <div id="activity-log-content" class="space-y-3 mt-4" style="display: none;">
+                <div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Cape St Francis Running</div>
+                <div class="text-sm text-gray-400">Thu 01 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">36.3 min</div>
+                <div class="text-xs text-gray-500">Run</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Indoor Cycling</div>
+                <div class="text-sm text-gray-400">Wed 07 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">32.3 min</div>
+                <div class="text-xs text-gray-500">Indoor Cycle</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-green-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Strength</div>
+                <div class="text-sm text-gray-400">Thu 08 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">32.7 min</div>
+                <div class="text-xs text-gray-500">Kettlebells</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Ballito Trail Running</div>
+                <div class="text-sm text-gray-400">Thu 08 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">30.5 min</div>
+                <div class="text-xs text-gray-500">Trail Run</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-green-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Strength</div>
+                <div class="text-sm text-gray-400">Fri 09 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">24 min</div>
+                <div class="text-xs text-gray-500">Kettlebells</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Ballito Trail Running</div>
+                <div class="text-sm text-gray-400">Fri 09 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">31.3 min</div>
+                <div class="text-xs text-gray-500">Trail Run</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-green-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Strength</div>
+                <div class="text-sm text-gray-400">Sat 10 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">32.9 min</div>
+                <div class="text-xs text-gray-500">Kettlebells</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Ballito Trail Running</div>
+                <div class="text-sm text-gray-400">Sat 10 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">62.2 min</div>
+                <div class="text-xs text-gray-500">Trail Run</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Ballito Trail Running</div>
+                <div class="text-sm text-gray-400">Sun 11 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">61.5 min</div>
+                <div class="text-xs text-gray-500">Trail Run</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-green-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Strength</div>
+                <div class="text-sm text-gray-400">Mon 12 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">25.7 min</div>
+                <div class="text-xs text-gray-500">Kettlebells</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Padel</div>
+                <div class="text-sm text-gray-400">Mon 12 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">61.5 min</div>
+                <div class="text-xs text-gray-500">Padel</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-green-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Strength</div>
+                <div class="text-sm text-gray-400">Tue 13 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">26.7 min</div>
+                <div class="text-xs text-gray-500">Kettlebells</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Indoor Cycling</div>
+                <div class="text-sm text-gray-400">Tue 13 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">30.2 min</div>
+                <div class="text-xs text-gray-500">Indoor Cycle</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Salt Rock Tennis</div>
+                <div class="text-sm text-gray-400">Wed 14 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">79.2 min</div>
+                <div class="text-xs text-gray-500">Tennis</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Ballito Hiking</div>
+                <div class="text-sm text-gray-400">Thu 15 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">66 min</div>
+                <div class="text-xs text-gray-500">Hike</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Indoor Cycling</div>
+                <div class="text-sm text-gray-400">Sat 17 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">30.2 min</div>
+                <div class="text-xs text-gray-500">Indoor Cycle</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-green-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Strength</div>
+                <div class="text-sm text-gray-400">Sat 17 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">16 min</div>
+                <div class="text-xs text-gray-500">Kettlebells</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Ballito Running</div>
+                <div class="text-sm text-gray-400">Sun 18 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">78 min</div>
+                <div class="text-xs text-gray-500">Run</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Indoor Cycling</div>
+                <div class="text-sm text-gray-400">Mon 19 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">30.1 min</div>
+                <div class="text-xs text-gray-500">Indoor Cycle</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-green-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Strength</div>
+                <div class="text-sm text-gray-400">Mon 19 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">21.1 min</div>
+                <div class="text-xs text-gray-500">Kettlebells</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Ballito Hiking</div>
+                <div class="text-sm text-gray-400">Tue 20 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">62.2 min</div>
+                <div class="text-xs text-gray-500">Hike</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Salt Rock Tennis</div>
+                <div class="text-sm text-gray-400">Wed 21 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">44.8 min</div>
+                <div class="text-xs text-gray-500">Tennis</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Ballito Hiking</div>
+                <div class="text-sm text-gray-400">Thu 22 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">63 min</div>
+                <div class="text-xs text-gray-500">Hike</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Salt Rock Tennis</div>
+                <div class="text-sm text-gray-400">Sat 24 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">65.2 min</div>
+                <div class="text-xs text-gray-500">Tennis</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Indoor Cycling</div>
+                <div class="text-sm text-gray-400">Sun 25 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">30.2 min</div>
+                <div class="text-xs text-gray-500">Indoor Cycle</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-green-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Strength</div>
+                <div class="text-sm text-gray-400">Sun 25 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">14.3 min</div>
+                <div class="text-xs text-gray-500">Kettlebells</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Padel</div>
+                <div class="text-sm text-gray-400">Mon 26 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">91 min</div>
+                <div class="text-xs text-gray-500">Padel</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Salt Rock Tennis</div>
+                <div class="text-sm text-gray-400">Wed 28 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">60.1 min</div>
+                <div class="text-xs text-gray-500">Tennis</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Salt Rock Tennis</div>
+                <div class="text-sm text-gray-400">Thu 29 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">43.4 min</div>
+                <div class="text-xs text-gray-500">Tennis</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-green-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Strength</div>
+                <div class="text-sm text-gray-400">Sat 31 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">28.6 min</div>
+                <div class="text-xs text-gray-500">Kettlebells</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Indoor Cycling</div>
+                <div class="text-sm text-gray-400">Sat 31 Jan</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">30.6 min</div>
+                <div class="text-xs text-gray-500">Indoor Cycle</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-orange-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Indoor Cycling</div>
+                <div class="text-sm text-gray-400">Sun 01 Feb</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">31 min</div>
+                <div class="text-xs text-gray-500">Indoor Cycle</div>
+            </div>
+        </div><div class="flex items-center justify-between p-3 bg-green-500/20 rounded-xl">
+            <div>
+                <div class="font-medium">Strength</div>
+                <div class="text-sm text-gray-400">Mon 02 Feb</div>
+            </div>
+            <div class="text-right">
+                <div class="text-blue-400">30.1 min</div>
+                <div class="text-xs text-gray-500">Kettlebells</div>
+            </div>
+        </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle section visibility
+        function toggleSection(id) {
+            const content = document.getElementById(id + '-content');
+            const toggle = document.getElementById(id + '-toggle');
+            if (content.style.display === 'none') {
+                content.style.display = (id === 'calendar' || id === 'summary' || id === 'activity-log' || id === '7d-activities' || id === 'weighins') ? 'block' : 'grid';
+                toggle.textContent = '▼';
+            } else {
+                content.style.display = 'none';
+                toggle.textContent = '▶';
+            }
+        }
+
+        // Calendar functionality
+        const exerciseDates = ["2022-02-20", "2026-01-14", "2026-01-18", "2022-03-23", "2022-02-02", "2022-03-31", "2022-02-19", "2026-01-17", "2026-01-28", "2026-01-31", "2026-01-13", "2022-02-10", "2022-02-15", "2022-01-03", "2022-02-18", "2026-01-10", "2026-01-24", "2026-01-08", "2026-01-20", "2022-04-20", "2022-02-08", "2026-01-12", "2022-03-22", "2026-01-15", "2026-01-07", "2022-01-17", "2022-01-02", "2022-04-17", "2026-01-09", "2026-01-19", "2022-03-20", "2022-02-01", "2022-01-21", "2026-01-01", "2022-02-21", "2026-01-11", "2022-03-21", "2022-01-20", "2022-02-11", "2026-01-22", "2026-02-01", "2026-01-26", "2026-01-29", "2022-04-21", "2022-02-07", "2022-02-06", "2026-02-02", "2026-01-25", "2026-01-21"];
+        let currentCalendarDate = new Date();
+
+        function renderCalendar() {
+            const year = currentCalendarDate.getFullYear();
+            const month = currentCalendarDate.getMonth();
+
+            // Update month label
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            // Count exercise days in this month
+            const monthExerciseDays = exerciseDates.filter(d => {
+                const date = new Date(d);
+                return date.getFullYear() === year && date.getMonth() === month;
+            }).length;
+            document.getElementById('calendar-month-label').textContent = `${monthNames[month]} ${year} (${monthExerciseDays} days)`;
+
+            // Get first day of month and total days
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const totalDays = lastDay.getDate();
+
+            // Monday = 0, Sunday = 6 (adjust from JS default where Sunday = 0)
+            let startDay = firstDay.getDay() - 1;
+            if (startDay < 0) startDay = 6;
+
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+
+            let html = '';
+
+            // Empty cells for days before start of month
+            for (let i = 0; i < startDay; i++) {
+                html += '<div class="aspect-square"></div>';
+            }
+
+            // Days of the month
+            for (let day = 1; day <= totalDays; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const hasExercise = exerciseDates.includes(dateStr);
+                const isToday = dateStr === todayStr;
+                const isFuture = new Date(dateStr) > today;
+
+                let bgClass = 'bg-red-500/60';
+                if (hasExercise) bgClass = 'bg-green-500';
+                else if (isFuture) bgClass = 'bg-gray-800/30';
+
+                const todayRing = isToday ? 'ring-2 ring-white' : '';
+                const textColor = isFuture ? 'text-gray-600' : 'text-gray-300';
+
+                html += `<div class="aspect-square ${bgClass} ${todayRing} rounded-lg flex items-center justify-center ${textColor} text-sm">${day}</div>`;
+            }
+
+            document.getElementById('calendar-grid').innerHTML = html;
+        }
+
+        function prevMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentCalendarDate.setMonth(currentCalendarDate.getMonth() + 1);
+            renderCalendar();
+        }
+
+        // Initialize calendar
+        renderCalendar();
+
+        const weightData = [{"date": "2026-01-01", "weight": 97, "rolling_avg": 97.0}, {"date": "2026-01-07", "weight": 97, "rolling_avg": 97.0}, {"date": "2026-01-09", "weight": 95.5, "rolling_avg": 96.5}, {"date": "2026-01-10", "weight": 94.9, "rolling_avg": 96.1}, {"date": "2026-01-11", "weight": 94.6, "rolling_avg": 95.5}, {"date": "2026-01-13", "weight": 94, "rolling_avg": 95.2}, {"date": "2026-01-14", "weight": 93.7, "rolling_avg": 95.0}, {"date": "2026-01-15", "weight": 94.3, "rolling_avg": 94.9}, {"date": "2026-01-16", "weight": 93.9, "rolling_avg": 94.7}, {"date": "2026-01-17", "weight": 92.6, "rolling_avg": 94.2}, {"date": "2026-01-18", "weight": 93, "rolling_avg": 94.1}, {"date": "2026-01-19", "weight": 93.4, "rolling_avg": 93.8}, {"date": "2026-01-20", "weight": 93, "rolling_avg": 93.6}, {"date": "2026-01-21", "weight": 91.8, "rolling_avg": 93.3}, {"date": "2026-01-22", "weight": 92.4, "rolling_avg": 93.2}, {"date": "2026-01-23", "weight": 92.4, "rolling_avg": 93.0}, {"date": "2026-01-25", "weight": 92.3, "rolling_avg": 92.8}, {"date": "2026-01-26", "weight": 91.4, "rolling_avg": 92.5}, {"date": "2026-01-27", "weight": 92.3, "rolling_avg": 92.4}, {"date": "2026-01-28", "weight": 92.3, "rolling_avg": 92.4}, {"date": "2026-01-29", "weight": 92.4, "rolling_avg": 92.3}, {"date": "2026-01-31", "weight": 91.5, "rolling_avg": 92.1}, {"date": "2026-02-01", "weight": 91, "rolling_avg": 92.0}, {"date": "2026-02-02", "weight": 92.3, "rolling_avg": 91.9}];
+
+        // Weight Chart
+        let weightChart;
+        let isZoomedOut = false;
+
+        function toggleWeightZoom() {
+            isZoomedOut = !isZoomedOut;
+            const btn = document.getElementById('zoomToggle');
+            if (isZoomedOut) {
+                weightChart.options.scales.y.min = 80;
+                weightChart.options.scales.y.max = 100;
+                btn.textContent = '🔍 Zoom In';
+            } else {
+                weightChart.options.scales.y.min = undefined;
+                weightChart.options.scales.y.max = undefined;
+                btn.textContent = '🔍 Zoom Out';
+            }
+            weightChart.update();
+        }
+
+        if (weightData.length > 0) {
+            weightChart = new Chart(document.getElementById('weightChart'), {
+                type: 'line',
+                data: {
+                    labels: weightData.map(d => {
+                        const date = new Date(d.date);
+                        return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+                    }),
+                    datasets: [
+                        {
+                            label: 'Weight (kg)',
+                            data: weightData.map(d => d.weight),
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointBackgroundColor: '#10b981',
+                            pointRadius: 4
+                        },
+                        {
+                            label: '10-day Avg',
+                            data: weightData.map(d => d.rolling_avg),
+                            borderColor: '#f97316',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            fill: false,
+                            tension: 0.3,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                            labels: { color: '#fff', usePointStyle: true, padding: 20 }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { color: '#9ca3af' },
+                            grid: { color: 'rgba(255,255,255,0.1)' }
+                        },
+                        x: {
+                            ticks: { color: '#9ca3af' },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
