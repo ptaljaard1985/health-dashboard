@@ -18,7 +18,7 @@
         <!-- Header -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold mb-2">Health Dashboard</h1>
-            <p class="text-gray-400">Last updated: 2026-02-08 18:22</p>
+            <p class="text-gray-400">Last updated: 2026-02-08 19:12</p>
         </div>
 
         <!-- AI Summary -->
@@ -31,7 +31,7 @@
                 <span id="summary-toggle" class="text-gray-400">▶</span>
             </div>
             <div id="summary-content" class="mt-4 text-gray-300 leading-relaxed space-y-3" style="display: none;">
-                <p>The past week has been a solid one, with a good balance of cardio and strength activities. You've completed 6 workouts, which is right on target for your weekly goals. However, I'd like to see a bit more emphasis on your strength training, as you've only hit 1 out of your 3 weekly strength targets.</p><p>Over the last 30 days, your activity mix has been quite varied, which is great to see. You've hit your monthly goals for both cardio and strength activities, which is a positive sign. Keep up the consistent effort, and you'll continue to see progress.</p><p>Your weight loss journey has been impressive so far, with a total of 5.7 kg lost in just 38 days. The pace of 1.06 kg per week is right on track for your target of 82 kg by the end of 2026. As long as you maintain your current approach, you're well on your way to achieving your goal.</p>
+                <p>The past week's activity balance was solid, with a mix of indoor cycling, tennis, and kettlebells. However, the cardio and strength targets were not quite met, suggesting a need to increase your weekly workout frequency to stay on track.</p><p>Looking at the last 30 days, you've maintained a consistent and varied exercise routine, hitting your monthly targets for both cardio and strength training. This diverse activity mix is an excellent approach to building a robust aerobic base.</p><p>Your weight loss progress has been commendable, with a total of 5.7 kg lost in the first 38 days of the year. Maintaining an average of 1.06 kg per week puts you well on your way to reaching your goal weight of 82 kg by the end of 2026. Keep up the excellent work!</p>
             </div>
         </div>
 
@@ -257,11 +257,17 @@
             <canvas id="weightChart" height="100"></canvas>
             <div class="border-t border-white/10 pt-4 mt-4">
                 <div class="flex justify-between items-center cursor-pointer" onclick="toggleSection('weighins')">
-                    <span class="text-sm text-gray-400">Weigh-ins (last 7 days)</span>
+                    <span class="text-sm text-gray-400">Weigh-ins (10 most recent)</span>
                     <span id="weighins-toggle" class="text-gray-400">▶</span>
                 </div>
                 <div id="weighins-content" class="space-y-2 mt-3" style="display: none;">
                     <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+            <span class="text-gray-400 text-sm">Sun 08 Feb</span>
+            <div class="flex items-center gap-3">
+                <span class="text-red-400">↑ 1.2</span>
+                <span class="font-medium">91.8 kg</span>
+            </div>
+        </div><div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
             <span class="text-gray-400 text-sm">Sat 07 Feb</span>
             <div class="flex items-center gap-3">
                 <span class="text-green-400">↓ 1.7</span>
@@ -294,8 +300,26 @@
         </div><div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
             <span class="text-gray-400 text-sm">Sun 01 Feb</span>
             <div class="flex items-center gap-3">
-                
+                <span class="text-green-400">↓ 0.5</span>
                 <span class="font-medium">91.0 kg</span>
+            </div>
+        </div><div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+            <span class="text-gray-400 text-sm">Sat 31 Jan</span>
+            <div class="flex items-center gap-3">
+                <span class="text-green-400">↓ 0.9</span>
+                <span class="font-medium">91.5 kg</span>
+            </div>
+        </div><div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+            <span class="text-gray-400 text-sm">Thu 29 Jan</span>
+            <div class="flex items-center gap-3">
+                <span class="text-red-400">↑ 0.1</span>
+                <span class="font-medium">92.4 kg</span>
+            </div>
+        </div><div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+            <span class="text-gray-400 text-sm">Wed 28 Jan</span>
+            <div class="flex items-center gap-3">
+                
+                <span class="font-medium">92.3 kg</span>
             </div>
         </div>
                 </div>
@@ -715,7 +739,7 @@
         }
 
         // Calendar functionality
-        const exerciseDates = ["2026-01-21", "2026-01-14", "2026-02-04", "2026-01-22", "2026-02-08", "2026-02-01", "2026-01-08", "2026-01-15", "2026-01-26", "2026-01-10", "2026-01-12", "2026-01-18", "2026-01-17", "2026-01-24", "2026-01-25", "2026-01-13", "2026-01-07", "2026-01-01", "2026-01-11", "2026-01-09", "2026-02-03", "2026-02-07", "2026-01-29", "2026-02-02", "2026-01-20", "2026-01-19", "2026-02-05", "2026-01-28", "2026-01-31"];
+        const exerciseDates = ["2026-02-02", "2026-01-11", "2026-01-31", "2026-01-13", "2026-01-14", "2026-02-01", "2026-01-21", "2026-01-01", "2026-01-20", "2026-01-10", "2026-01-22", "2026-01-12", "2026-01-17", "2026-01-08", "2026-01-07", "2026-02-05", "2026-02-07", "2026-01-28", "2026-01-15", "2026-02-03", "2026-01-09", "2026-01-19", "2026-02-08", "2026-01-29", "2026-01-24", "2026-01-26", "2026-01-25", "2026-01-18", "2026-02-04"];
         let currentCalendarDate = new Date();
 
         function renderCalendar() {
