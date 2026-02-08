@@ -641,11 +641,11 @@ def generate_dashboard(exercises, weights):
             <canvas id="weightChart" height="100"></canvas>
             <div class="border-t border-white/10 pt-4 mt-4">
                 <div class="flex justify-between items-center cursor-pointer" onclick="toggleSection('weighins')">
-                    <span class="text-sm text-gray-400">Weigh-ins (last 7 days)</span>
+                    <span class="text-sm text-gray-400">Weigh-ins (10 most recent)</span>
                     <span id="weighins-toggle" class="text-gray-400">▶</span>
                 </div>
                 <div id="weighins-content" class="space-y-2 mt-3" style="display: none;">
-                    {generate_weighin_list(last_7_days_weights)}
+                    {generate_weighin_list(weights)}
                 </div>
             </div>
         </div>
@@ -976,12 +976,12 @@ def generate_full_activity_log(workouts):
 
 
 def generate_weighin_list(weights):
-    """Generate weigh-in list for last 7 days."""
-    # Sort by date descending (newest first)
-    sorted_weights = sorted(weights, key=lambda x: x['date'], reverse=True)
+    """Generate weigh-in list for 10 most recent weigh-ins."""
+    # Sort by date descending (newest first), limit to 10
+    sorted_weights = sorted(weights, key=lambda x: x['date'], reverse=True)[:10]
 
     if not sorted_weights:
-        return '<div class="text-gray-500 text-sm">No weigh-ins in last 7 days</div>'
+        return '<div class="text-gray-500 text-sm">No weigh-ins recorded</div>'
 
     html = ""
     for i, w in enumerate(sorted_weights):
