@@ -19,8 +19,8 @@ from db import init_db, get_connection
 load_dotenv()
 
 # Telegram config
-TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN', '8334374048:AAHE-v6kjGGeHr41k8WWPYQH2LEFaZMdRSo')
-TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID', '8569149206')
+TELEGRAM_BOT_TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
 
 # Weekly targets (rolling 7 days)
 WEEKLY_CARDIO_GOAL = 4
