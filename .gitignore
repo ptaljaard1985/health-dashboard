@@ -1,7 +1,5 @@
 .env
-health.db
 garmin_sync.log
-dashboard.html
 migrate_from_notion.py
 __pycache__/
 *.pyc
