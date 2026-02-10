@@ -810,7 +810,7 @@ def generate_dashboard(exercises, weights):
                 const daysInMonth = new Date(year, month + 1, 0).getDate();
                 html += `<div class="flex items-center gap-2 mb-1">`;
                 html += `<div class="w-8 text-xs text-gray-500 shrink-0">${{monthNames[month]}}</div>`;
-                html += `<div class="flex gap-[3px] flex-wrap">`;
+                html += `<div style="display: grid; grid-template-columns: repeat(${{daysInMonth}}, 1fr); gap: 3px; flex: 1;">`;
 
                 for (let day = 1; day <= daysInMonth; day++) {{
                     const dateStr = `${{year}}-${{String(month + 1).padStart(2, '0')}}-${{String(day).padStart(2, '0')}}`;
@@ -826,7 +826,7 @@ def generate_dashboard(exercises, weights):
                     if (!isFuture && hasExercise) totalPastDays++;
 
                     const ring = isToday ? 'ring-2 ring-white' : '';
-                    html += `<div class="w-[14px] h-[14px] ${{bg}} ${{ring}} rounded-sm" title="${{dateStr}}"></div>`;
+                    html += `<div class="${{bg}} ${{ring}} rounded-sm" style="aspect-ratio: 1; width: 100%;" title="${{dateStr}}"></div>`;
                 }}
 
                 html += `</div></div>`;
