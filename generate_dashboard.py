@@ -554,21 +554,34 @@ def generate_dashboard(exercises, weights):
                 <span id="calendar-toggle" class="text-gray-400">▶</span>
             </div>
             <div id="calendar-content" style="display: none;" class="mt-4">
-                <div class="flex justify-between items-center mb-4">
-                    <button onclick="prevMonth()" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition">← Prev</button>
-                    <h3 id="calendar-month-label" class="text-lg font-semibold"></h3>
-                    <button onclick="nextMonth()" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition">Next →</button>
+                <!-- Month/Year toggle -->
+                <div class="flex gap-2 mb-4">
+                    <button id="cal-month-btn" onclick="switchCalendarView('month')" class="px-3 py-1 rounded-lg bg-white/20 text-white text-sm transition">Month</button>
+                    <button id="cal-year-btn" onclick="switchCalendarView('year')" class="px-3 py-1 rounded-lg bg-white/10 text-gray-400 text-sm hover:bg-white/20 transition">Year</button>
                 </div>
-                <div class="grid grid-cols-7 gap-1 mb-2">
-                    <div class="text-center text-xs text-gray-500 py-1">Mon</div>
-                    <div class="text-center text-xs text-gray-500 py-1">Tue</div>
-                    <div class="text-center text-xs text-gray-500 py-1">Wed</div>
-                    <div class="text-center text-xs text-gray-500 py-1">Thu</div>
-                    <div class="text-center text-xs text-gray-500 py-1">Fri</div>
-                    <div class="text-center text-xs text-gray-500 py-1">Sat</div>
-                    <div class="text-center text-xs text-gray-500 py-1">Sun</div>
+                <!-- Month view -->
+                <div id="calendar-month-view">
+                    <div class="flex justify-between items-center mb-4">
+                        <button onclick="prevMonth()" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition">← Prev</button>
+                        <h3 id="calendar-month-label" class="text-lg font-semibold"></h3>
+                        <button onclick="nextMonth()" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition">Next →</button>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 mb-2">
+                        <div class="text-center text-xs text-gray-500 py-1">Mon</div>
+                        <div class="text-center text-xs text-gray-500 py-1">Tue</div>
+                        <div class="text-center text-xs text-gray-500 py-1">Wed</div>
+                        <div class="text-center text-xs text-gray-500 py-1">Thu</div>
+                        <div class="text-center text-xs text-gray-500 py-1">Fri</div>
+                        <div class="text-center text-xs text-gray-500 py-1">Sat</div>
+                        <div class="text-center text-xs text-gray-500 py-1">Sun</div>
+                    </div>
+                    <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
                 </div>
-                <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
+                <!-- Year view -->
+                <div id="calendar-year-view" style="display: none;">
+                    <h3 id="year-view-label" class="text-lg font-semibold text-center mb-4"></h3>
+                    <div id="year-view-grid"></div>
+                </div>
             </div>
         </div>
 
@@ -780,6 +793,68 @@ def generate_dashboard(exercises, weights):
 
         // Initialize calendar
         renderCalendar();
+
+        // Year view
+        function renderYearView() {{
+            const year = 2026;
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                               'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+
+            let totalExerciseDays = 0;
+            let totalPastDays = 0;
+
+            let html = '';
+            for (let month = 0; month < 12; month++) {{
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                html += `<div class="flex items-center gap-2 mb-1">`;
+                html += `<div class="w-8 text-xs text-gray-500 shrink-0">${{monthNames[month]}}</div>`;
+                html += `<div class="flex gap-[3px] flex-wrap">`;
+
+                for (let day = 1; day <= daysInMonth; day++) {{
+                    const dateStr = `${{year}}-${{String(month + 1).padStart(2, '0')}}-${{String(day).padStart(2, '0')}}`;
+                    const hasExercise = exerciseDates.includes(dateStr);
+                    const isToday = dateStr === todayStr;
+                    const isFuture = new Date(dateStr) > today;
+
+                    let bg = 'bg-red-500/60';
+                    if (hasExercise) {{ bg = 'bg-green-500'; totalExerciseDays++; }}
+                    else if (isFuture) {{ bg = 'bg-gray-800/30'; }}
+
+                    if (!isFuture && !hasExercise) totalPastDays++;
+                    if (!isFuture && hasExercise) totalPastDays++;
+
+                    const ring = isToday ? 'ring-2 ring-white' : '';
+                    html += `<div class="w-[14px] h-[14px] ${{bg}} ${{ring}} rounded-sm" title="${{dateStr}}"></div>`;
+                }}
+
+                html += `</div></div>`;
+            }}
+
+            document.getElementById('year-view-label').textContent = `${{year}} — ${{totalExerciseDays}} of ${{totalPastDays}} days`;
+            document.getElementById('year-view-grid').innerHTML = html;
+        }}
+
+        function switchCalendarView(view) {{
+            const monthView = document.getElementById('calendar-month-view');
+            const yearView = document.getElementById('calendar-year-view');
+            const monthBtn = document.getElementById('cal-month-btn');
+            const yearBtn = document.getElementById('cal-year-btn');
+
+            if (view === 'year') {{
+                monthView.style.display = 'none';
+                yearView.style.display = 'block';
+                monthBtn.className = 'px-3 py-1 rounded-lg bg-white/10 text-gray-400 text-sm hover:bg-white/20 transition';
+                yearBtn.className = 'px-3 py-1 rounded-lg bg-white/20 text-white text-sm transition';
+                renderYearView();
+            }} else {{
+                monthView.style.display = 'block';
+                yearView.style.display = 'none';
+                monthBtn.className = 'px-3 py-1 rounded-lg bg-white/20 text-white text-sm transition';
+                yearBtn.className = 'px-3 py-1 rounded-lg bg-white/10 text-gray-400 text-sm hover:bg-white/20 transition';
+            }}
+        }}
 
         const weightData = {json.dumps(weight_chart_with_avg)};
 
