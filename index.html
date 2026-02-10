@@ -18,7 +18,7 @@
         <!-- Header -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold mb-2">Health Dashboard</h1>
-            <p class="text-gray-400">Last updated: 2026-02-10 06:54</p>
+            <p class="text-gray-400">Last updated: 2026-02-10 09:10</p>
         </div>
 
         <!-- AI Summary -->
@@ -31,7 +31,7 @@
                 <span id="summary-toggle" class="text-gray-400">▶</span>
             </div>
             <div id="summary-content" class="mt-4 text-gray-300 leading-relaxed space-y-3" style="display: none;">
-                <p>The past week's activities were well-balanced, with a mix of cardio and strength training. You completed all your planned workouts, which is excellent. However, the weight loss of 0.4 kg this week is slightly lower than the desired pace.</p><p>Over the past 30 days, your activity mix has been diverse, including a variety of exercises such as kettlebells, cycling, tennis, and hiking. You have met your monthly goals for both cardio and strength training, which is commendable.</p><p>Your weight progress since the start of the year has been impressive, with a loss of 5.4 kg in 40 days. This pace of 0.95 kg per week is on track to reach your goal of 82 kg by the end of 2026. Keep up the excellent work, and let's continue to focus on improving your insulin sensitivity and fat metabolism.</p>
+                <p>AI summary unavailable - no API key configured.</p>
             </div>
         </div>
 
@@ -50,21 +50,34 @@
                 <span id="calendar-toggle" class="text-gray-400">▶</span>
             </div>
             <div id="calendar-content" style="display: none;" class="mt-4">
-                <div class="flex justify-between items-center mb-4">
-                    <button onclick="prevMonth()" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition">← Prev</button>
-                    <h3 id="calendar-month-label" class="text-lg font-semibold"></h3>
-                    <button onclick="nextMonth()" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition">Next →</button>
+                <!-- Month/Year toggle -->
+                <div class="flex gap-2 mb-4">
+                    <button id="cal-month-btn" onclick="switchCalendarView('month')" class="px-3 py-1 rounded-lg bg-white/20 text-white text-sm transition">Month</button>
+                    <button id="cal-year-btn" onclick="switchCalendarView('year')" class="px-3 py-1 rounded-lg bg-white/10 text-gray-400 text-sm hover:bg-white/20 transition">Year</button>
                 </div>
-                <div class="grid grid-cols-7 gap-1 mb-2">
-                    <div class="text-center text-xs text-gray-500 py-1">Mon</div>
-                    <div class="text-center text-xs text-gray-500 py-1">Tue</div>
-                    <div class="text-center text-xs text-gray-500 py-1">Wed</div>
-                    <div class="text-center text-xs text-gray-500 py-1">Thu</div>
-                    <div class="text-center text-xs text-gray-500 py-1">Fri</div>
-                    <div class="text-center text-xs text-gray-500 py-1">Sat</div>
-                    <div class="text-center text-xs text-gray-500 py-1">Sun</div>
+                <!-- Month view -->
+                <div id="calendar-month-view">
+                    <div class="flex justify-between items-center mb-4">
+                        <button onclick="prevMonth()" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition">← Prev</button>
+                        <h3 id="calendar-month-label" class="text-lg font-semibold"></h3>
+                        <button onclick="nextMonth()" class="px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition">Next →</button>
+                    </div>
+                    <div class="grid grid-cols-7 gap-1 mb-2">
+                        <div class="text-center text-xs text-gray-500 py-1">Mon</div>
+                        <div class="text-center text-xs text-gray-500 py-1">Tue</div>
+                        <div class="text-center text-xs text-gray-500 py-1">Wed</div>
+                        <div class="text-center text-xs text-gray-500 py-1">Thu</div>
+                        <div class="text-center text-xs text-gray-500 py-1">Fri</div>
+                        <div class="text-center text-xs text-gray-500 py-1">Sat</div>
+                        <div class="text-center text-xs text-gray-500 py-1">Sun</div>
+                    </div>
+                    <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
                 </div>
-                <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
+                <!-- Year view -->
+                <div id="calendar-year-view" style="display: none;">
+                    <h3 id="year-view-label" class="text-lg font-semibold text-center mb-4"></h3>
+                    <div id="year-view-grid"></div>
+                </div>
             </div>
         </div>
 
@@ -766,7 +779,7 @@
         }
 
         // Calendar functionality
-        const exerciseDates = ["2026-01-01", "2026-01-08", "2026-01-28", "2026-01-31", "2026-01-14", "2026-01-22", "2026-01-11", "2026-01-10", "2026-01-19", "2026-02-09", "2026-02-02", "2026-01-15", "2026-02-08", "2026-01-09", "2026-01-26", "2026-02-05", "2026-01-13", "2026-01-07", "2026-01-20", "2026-02-04", "2026-01-12", "2026-01-25", "2026-01-24", "2026-01-21", "2026-01-18", "2026-02-01", "2026-02-03", "2026-01-29", "2026-01-17", "2026-02-10", "2026-02-07"];
+        const exerciseDates = ["2026-01-25", "2026-01-12", "2026-01-14", "2026-01-26", "2026-01-20", "2026-02-01", "2026-01-21", "2026-01-13", "2026-01-09", "2026-01-24", "2026-01-19", "2026-02-07", "2026-01-17", "2026-01-07", "2026-02-03", "2026-01-11", "2026-01-01", "2026-01-29", "2026-02-10", "2026-01-15", "2026-01-22", "2026-01-10", "2026-02-08", "2026-01-31", "2026-02-02", "2026-02-04", "2026-02-09", "2026-01-08", "2026-01-18", "2026-01-28", "2026-02-05"];
         let currentCalendarDate = new Date();
 
         function renderCalendar() {
@@ -834,6 +847,68 @@
 
         // Initialize calendar
         renderCalendar();
+
+        // Year view
+        function renderYearView() {
+            const year = 2026;
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                               'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const today = new Date();
+            const todayStr = today.toISOString().split('T')[0];
+
+            let totalExerciseDays = 0;
+            let totalPastDays = 0;
+
+            let html = '';
+            for (let month = 0; month < 12; month++) {
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                html += `<div class="flex items-center gap-2 mb-1">`;
+                html += `<div class="w-8 text-xs text-gray-500 shrink-0">${monthNames[month]}</div>`;
+                html += `<div class="flex gap-[3px] flex-wrap">`;
+
+                for (let day = 1; day <= daysInMonth; day++) {
+                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const hasExercise = exerciseDates.includes(dateStr);
+                    const isToday = dateStr === todayStr;
+                    const isFuture = new Date(dateStr) > today;
+
+                    let bg = 'bg-red-500/60';
+                    if (hasExercise) { bg = 'bg-green-500'; totalExerciseDays++; }
+                    else if (isFuture) { bg = 'bg-gray-800/30'; }
+
+                    if (!isFuture && !hasExercise) totalPastDays++;
+                    if (!isFuture && hasExercise) totalPastDays++;
+
+                    const ring = isToday ? 'ring-2 ring-white' : '';
+                    html += `<div class="w-[14px] h-[14px] ${bg} ${ring} rounded-sm" title="${dateStr}"></div>`;
+                }
+
+                html += `</div></div>`;
+            }
+
+            document.getElementById('year-view-label').textContent = `${year} — ${totalExerciseDays} of ${totalPastDays} days`;
+            document.getElementById('year-view-grid').innerHTML = html;
+        }
+
+        function switchCalendarView(view) {
+            const monthView = document.getElementById('calendar-month-view');
+            const yearView = document.getElementById('calendar-year-view');
+            const monthBtn = document.getElementById('cal-month-btn');
+            const yearBtn = document.getElementById('cal-year-btn');
+
+            if (view === 'year') {
+                monthView.style.display = 'none';
+                yearView.style.display = 'block';
+                monthBtn.className = 'px-3 py-1 rounded-lg bg-white/10 text-gray-400 text-sm hover:bg-white/20 transition';
+                yearBtn.className = 'px-3 py-1 rounded-lg bg-white/20 text-white text-sm transition';
+                renderYearView();
+            } else {
+                monthView.style.display = 'block';
+                yearView.style.display = 'none';
+                monthBtn.className = 'px-3 py-1 rounded-lg bg-white/20 text-white text-sm transition';
+                yearBtn.className = 'px-3 py-1 rounded-lg bg-white/10 text-gray-400 text-sm hover:bg-white/20 transition';
+            }
+        }
 
         const weightData = [{"date": "2026-01-07", "weight": 97.0, "rolling_avg": 97.0}, {"date": "2026-01-09", "weight": 95.5, "rolling_avg": 96.2}, {"date": "2026-01-10", "weight": 94.9, "rolling_avg": 95.8}, {"date": "2026-01-11", "weight": 94.6, "rolling_avg": 95.5}, {"date": "2026-01-13", "weight": 94.0, "rolling_avg": 95.2}, {"date": "2026-01-14", "weight": 93.7, "rolling_avg": 95.0}, {"date": "2026-01-15", "weight": 94.3, "rolling_avg": 94.9}, {"date": "2026-01-16", "weight": 93.9, "rolling_avg": 94.7}, {"date": "2026-01-17", "weight": 92.6, "rolling_avg": 94.2}, {"date": "2026-01-18", "weight": 93.0, "rolling_avg": 94.1}, {"date": "2026-01-19", "weight": 93.4, "rolling_avg": 93.8}, {"date": "2026-01-20", "weight": 93.0, "rolling_avg": 93.6}, {"date": "2026-01-21", "weight": 91.8, "rolling_avg": 93.3}, {"date": "2026-01-22", "weight": 92.4, "rolling_avg": 93.2}, {"date": "2026-01-23", "weight": 92.4, "rolling_avg": 93.0}, {"date": "2026-01-25", "weight": 92.3, "rolling_avg": 92.8}, {"date": "2026-01-26", "weight": 91.4, "rolling_avg": 92.5}, {"date": "2026-01-27", "weight": 92.3, "rolling_avg": 92.4}, {"date": "2026-01-28", "weight": 92.3, "rolling_avg": 92.4}, {"date": "2026-01-29", "weight": 92.4, "rolling_avg": 92.3}, {"date": "2026-01-31", "weight": 91.5, "rolling_avg": 92.1}, {"date": "2026-02-01", "weight": 91.0, "rolling_avg": 92.0}, {"date": "2026-02-02", "weight": 92.3, "rolling_avg": 91.9}, {"date": "2026-02-03", "weight": 91.7, "rolling_avg": 91.9}, {"date": "2026-02-04", "weight": 91.8, "rolling_avg": 91.9}, {"date": "2026-02-06", "weight": 92.3, "rolling_avg": 91.9}, {"date": "2026-02-07", "weight": 90.6, "rolling_avg": 91.7}, {"date": "2026-02-08", "weight": 91.8, "rolling_avg": 91.6}, {"date": "2026-02-09", "weight": 91.7, "rolling_avg": 91.6}, {"date": "2026-02-10", "weight": 92.1, "rolling_avg": 91.7}];
 

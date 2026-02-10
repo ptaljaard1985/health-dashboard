@@ -209,7 +209,7 @@ These are domain-specific rules embedded in the code. Future changes must respec
 ## 11. Known Issues / Tech Debt
 
 1. **File naming:** `garmin_notion_sync.py` references Notion in its name but has nothing to do with Notion. Rename to `garmin_sync.py`.
-2. **Giant HTML template:** `generate_dashboard.py` has a ~350-line f-string HTML template. Difficult to maintain. Consider Jinja2 templates if it grows further.
+2. **Giant HTML template:** `generate_dashboard.py` has a ~410-line f-string HTML template. Difficult to maintain. Consider Jinja2 templates if it grows further.
 3. **No error handling on GitHub Actions failures.** If the sync or notify workflow fails, nobody gets alerted.
 4. **Shell scripts have hardcoded paths.** `daily_health_sync.sh` and `push_dashboard.sh` use absolute macOS paths. Could be removed or updated.
 5. **`CARDIO_TYPES` defined in multiple places.** Both `health_notifications.py` and `generate_dashboard.py` define cardio types independently. Should be centralised in `db.py` or a constants module.
@@ -220,16 +220,19 @@ These are domain-specific rules embedded in the code. Future changes must respec
 
 ## 12. Session Log
 
-_Format for future sessions:_
-
-```
-### YYYY-MM-DD — Brief description
+### 2026-02-10 — Add year view to calendar section
 **Changes:**
-- What was added/changed/fixed
+- Added Month/Year toggle to the Calendar section in `generate_dashboard.py`
+- Year view shows 365 small squares (12 rows by month), colour-coded: green (exercised), red (rest day), grey (future)
+- Includes exercise day count summary ("2026 — X of Y days") and today highlight (white ring)
+- Toggle uses tab-style buttons matching existing Tailwind patterns
+- Regenerated `dashboard.html` and `index.html`
 
 **Decisions made:**
-- Any architectural or business rule decisions
+- Used month-row layout (12 rows, one per month) rather than GitHub-style 7×53 heatmap — more readable, works better on mobile
+- Year is hardcoded to 2026 (consistent with the rest of the dashboard which is 2026-specific)
+- No new dependencies, no new files — all changes within existing `generate_dashboard.py`
 
 **Known issues introduced:**
-- Any new tech debt or issues
-```
+- Year view year is hardcoded to 2026 (not dynamic) — fine for now given single-year scope
+- HTML template grew to ~410 lines (tech debt item #2 worsens slightly)
