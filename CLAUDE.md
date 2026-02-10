@@ -236,3 +236,16 @@ These are domain-specific rules embedded in the code. Future changes must respec
 **Known issues introduced:**
 - Year view year is hardcoded to 2026 (not dynamic) — fine for now given single-year scope
 - HTML template grew to ~410 lines (tech debt item #2 worsens slightly)
+
+### 2026-02-10 — Enlarge year view calendar squares
+**Changes:**
+- Changed year view day squares from fixed `14px × 14px` with flex-wrap to CSS grid with `grid-template-columns: repeat(daysInMonth, 1fr)`
+- Squares now stretch to fill the full container width, using `aspect-ratio: 1` to stay square
+- Regenerated `dashboard.html` and `index.html`
+
+**Decisions made:**
+- Used CSS grid with `1fr` columns rather than increasing the fixed pixel size — responsive and always fills the container regardless of screen width
+- Months with fewer days (e.g. February/28) have slightly wider squares than 31-day months — accepted trade-off for consistent edge-to-edge layout
+
+**Known issues introduced:**
+- None
