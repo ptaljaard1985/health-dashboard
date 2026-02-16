@@ -18,7 +18,7 @@
         <!-- Header -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold mb-2">Health Dashboard</h1>
-            <p class="text-gray-400">Last updated: 2026-02-16 01:11</p>
+            <p class="text-gray-400">Last updated: 2026-02-16 04:53</p>
         </div>
 
         <!-- AI Summary -->
@@ -31,7 +31,7 @@
                 <span id="summary-toggle" class="text-gray-400">▶</span>
             </div>
             <div id="summary-content" class="mt-4 text-gray-300 leading-relaxed space-y-3" style="display: none;">
-                <p>Your last 7 days have been consistent, with 5 total workouts, including 4 cardio activities and 1 strength session. The activity mix is well-balanced, with a good variety of tennis, indoor cycling, kettlebells, and padel. There are no major concerns, and you're making steady progress.</p><p>Over the past 30 days, you've maintained a high level of activity, completing 29 total workouts. The activity mix is diverse, with a focus on indoor cycling, tennis, and kettlebells, along with some hikes and a single run. This puts you on track to meet your monthly goals of 16 cardio activities and 10 strength sessions.</p><p>Your weight journey has been positive so far, with a total loss of 5.4 kg in the first 46 days of the year. At a rate of 0.82 kg per week, or 3.6 kg per month, you're well on your way to reaching your target weight of 82 kg by the end of 2026. Keep up the excellent work!</p>
+                <p>The past week's activity levels were quite balanced, with a good mix of cardio and strength training. You completed 5 workouts, hitting 4 out of 4 cardio sessions and 1 out of 3 strength sessions. The variety in your activities, including tennis, indoor cycling, kettlebells, and padel, is commendable. However, it's worth noting that you're slightly behind your weekly strength training goal.</p><p>Over the last 30 days, your activity mix has been diverse, encompassing indoor cycling, tennis, kettlebells, padel, hiking, and running. You've achieved 29 total workouts, which is on track for your monthly goals of 16 cardio and 10 strength activities. This consistent effort is praiseworthy and will contribute to your long-term success.</p><p>Your weight progress since the beginning of the year has been impressive, with a total loss of 5.9 kg in 46 days. The current pace of 0.89 kg per week, or 3.9 kg per month, is well on track to reach your target weight of 82 kg by the end of 2026. Keep up the excellent work!</p>
             </div>
         </div>
 
@@ -102,7 +102,7 @@
                 </div>
                 <div class="text-center">
                     <div class="text-3xl mb-1">⚖️</div>
-                    <div class="text-3xl font-bold text-red-400">+0.4</div>
+                    <div class="text-3xl font-bold text-green-400">-0.1</div>
                     <div class="text-gray-400 text-xs">kg</div>
                 </div>
                 <div class="text-center">
@@ -192,7 +192,7 @@
                 </div>
                 <div class="text-center">
                     <div class="text-3xl mb-1">⚖️</div>
-                    <div class="text-3xl font-bold text-red-400">+0.6</div>
+                    <div class="text-3xl font-bold text-red-400">+0.1</div>
                     <div class="text-gray-400 text-xs">kg</div>
                 </div>
                 <div class="text-center">
@@ -245,15 +245,15 @@
                 </div>
                 <div class="flex gap-8 items-start">
                     <div class="text-right">
-                        <div class="text-4xl font-bold text-green-400">0.82 <span class="text-lg text-gray-400">kg/wk</span></div>
+                        <div class="text-4xl font-bold text-green-400">0.9 <span class="text-lg text-gray-400">kg/wk</span></div>
                         <div class="text-sm text-gray-400">avg since Jan 1</div>
                     </div>
                     <div class="text-right">
-                        <div class="text-4xl font-bold text-green-400">0.5 <span class="text-lg text-gray-400">kg</span></div>
+                        <div class="text-4xl font-bold text-green-400">1.0 <span class="text-lg text-gray-400">kg</span></div>
                         <div class="text-sm text-gray-400">lost (30d)</div>
                     </div>
                     <div class="text-right">
-                        <div class="text-4xl font-bold text-emerald-400">92.1 <span class="text-lg text-gray-400">kg</span></div>
+                        <div class="text-4xl font-bold text-emerald-400">91.6 <span class="text-lg text-gray-400">kg</span></div>
                         <div class="text-sm text-gray-400">current</div>
                     </div>
                 </div>
@@ -266,6 +266,12 @@
                 </div>
                 <div id="weighins-content" class="space-y-2 mt-3" style="display: none;">
                     <div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
+            <span class="text-gray-400 text-sm">Mon 16 Feb</span>
+            <div class="flex items-center gap-3">
+                <span class="text-green-400">↓ 0.5</span>
+                <span class="font-medium">91.6 kg</span>
+            </div>
+        </div><div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
             <span class="text-gray-400 text-sm">Sun 15 Feb</span>
             <div class="flex items-center gap-3">
                 <span class="text-gray-400">→ 0</span>
@@ -316,14 +322,8 @@
         </div><div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
             <span class="text-gray-400 text-sm">Fri 06 Feb</span>
             <div class="flex items-center gap-3">
-                <span class="text-red-400">↑ 0.5</span>
-                <span class="font-medium">92.3 kg</span>
-            </div>
-        </div><div class="flex items-center justify-between p-2 bg-white/5 rounded-lg">
-            <span class="text-gray-400 text-sm">Wed 04 Feb</span>
-            <div class="flex items-center gap-3">
                 
-                <span class="font-medium">91.8 kg</span>
+                <span class="font-medium">92.3 kg</span>
             </div>
         </div>
                 </div>
@@ -788,7 +788,7 @@
         }
 
         // Calendar functionality
-        const exerciseDates = ["2026-01-20", "2026-01-25", "2026-01-09", "2026-02-09", "2026-01-12", "2026-01-13", "2026-01-24", "2026-01-11", "2026-01-01", "2026-02-11", "2026-01-08", "2026-01-29", "2026-01-21", "2026-01-28", "2026-01-22", "2026-01-18", "2026-02-10", "2026-01-17", "2026-01-10", "2026-02-01", "2026-01-26", "2026-02-03", "2026-01-14", "2026-02-12", "2026-01-15", "2026-02-05", "2026-02-08", "2026-02-14", "2026-02-07", "2026-02-04", "2026-01-19", "2026-01-31", "2026-02-02", "2026-01-07"];
+        const exerciseDates = ["2026-02-07", "2026-01-17", "2026-01-19", "2026-01-28", "2026-01-24", "2026-02-11", "2026-01-26", "2026-01-11", "2026-01-20", "2026-02-05", "2026-01-22", "2026-02-09", "2026-02-04", "2026-01-14", "2026-02-01", "2026-01-31", "2026-01-15", "2026-01-29", "2026-01-18", "2026-01-09", "2026-01-25", "2026-01-08", "2026-01-13", "2026-02-08", "2026-02-14", "2026-02-02", "2026-02-12", "2026-02-10", "2026-01-10", "2026-01-01", "2026-01-07", "2026-01-21", "2026-01-12", "2026-02-03"];
         let currentCalendarDate = new Date();
 
         function renderCalendar() {
@@ -919,7 +919,7 @@
             }
         }
 
-        const weightData = [{"date": "2026-01-07", "weight": 97.0, "rolling_avg": 97.0}, {"date": "2026-01-09", "weight": 95.5, "rolling_avg": 96.2}, {"date": "2026-01-10", "weight": 94.9, "rolling_avg": 95.8}, {"date": "2026-01-11", "weight": 94.6, "rolling_avg": 95.5}, {"date": "2026-01-13", "weight": 94.0, "rolling_avg": 95.2}, {"date": "2026-01-14", "weight": 93.7, "rolling_avg": 95.0}, {"date": "2026-01-15", "weight": 94.3, "rolling_avg": 94.9}, {"date": "2026-01-16", "weight": 93.9, "rolling_avg": 94.7}, {"date": "2026-01-17", "weight": 92.6, "rolling_avg": 94.2}, {"date": "2026-01-18", "weight": 93.0, "rolling_avg": 94.1}, {"date": "2026-01-19", "weight": 93.4, "rolling_avg": 93.8}, {"date": "2026-01-20", "weight": 93.0, "rolling_avg": 93.6}, {"date": "2026-01-21", "weight": 91.8, "rolling_avg": 93.3}, {"date": "2026-01-22", "weight": 92.4, "rolling_avg": 93.2}, {"date": "2026-01-23", "weight": 92.4, "rolling_avg": 93.0}, {"date": "2026-01-25", "weight": 92.3, "rolling_avg": 92.8}, {"date": "2026-01-26", "weight": 91.4, "rolling_avg": 92.5}, {"date": "2026-01-27", "weight": 92.3, "rolling_avg": 92.4}, {"date": "2026-01-28", "weight": 92.3, "rolling_avg": 92.4}, {"date": "2026-01-29", "weight": 92.4, "rolling_avg": 92.3}, {"date": "2026-01-31", "weight": 91.5, "rolling_avg": 92.1}, {"date": "2026-02-01", "weight": 91.0, "rolling_avg": 92.0}, {"date": "2026-02-02", "weight": 92.3, "rolling_avg": 91.9}, {"date": "2026-02-03", "weight": 91.7, "rolling_avg": 91.9}, {"date": "2026-02-04", "weight": 91.8, "rolling_avg": 91.9}, {"date": "2026-02-06", "weight": 92.3, "rolling_avg": 91.9}, {"date": "2026-02-07", "weight": 90.6, "rolling_avg": 91.7}, {"date": "2026-02-08", "weight": 91.8, "rolling_avg": 91.6}, {"date": "2026-02-09", "weight": 91.7, "rolling_avg": 91.6}, {"date": "2026-02-10", "weight": 92.1, "rolling_avg": 91.7}, {"date": "2026-02-12", "weight": 91.4, "rolling_avg": 91.7}, {"date": "2026-02-13", "weight": 91.1, "rolling_avg": 91.6}, {"date": "2026-02-14", "weight": 92.1, "rolling_avg": 91.6}, {"date": "2026-02-15", "weight": 92.1, "rolling_avg": 91.7}];
+        const weightData = [{"date": "2026-01-07", "weight": 97.0, "rolling_avg": 97.0}, {"date": "2026-01-09", "weight": 95.5, "rolling_avg": 96.2}, {"date": "2026-01-10", "weight": 94.9, "rolling_avg": 95.8}, {"date": "2026-01-11", "weight": 94.6, "rolling_avg": 95.5}, {"date": "2026-01-13", "weight": 94.0, "rolling_avg": 95.2}, {"date": "2026-01-14", "weight": 93.7, "rolling_avg": 95.0}, {"date": "2026-01-15", "weight": 94.3, "rolling_avg": 94.9}, {"date": "2026-01-16", "weight": 93.9, "rolling_avg": 94.7}, {"date": "2026-01-17", "weight": 92.6, "rolling_avg": 94.2}, {"date": "2026-01-18", "weight": 93.0, "rolling_avg": 94.1}, {"date": "2026-01-19", "weight": 93.4, "rolling_avg": 93.8}, {"date": "2026-01-20", "weight": 93.0, "rolling_avg": 93.6}, {"date": "2026-01-21", "weight": 91.8, "rolling_avg": 93.3}, {"date": "2026-01-22", "weight": 92.4, "rolling_avg": 93.2}, {"date": "2026-01-23", "weight": 92.4, "rolling_avg": 93.0}, {"date": "2026-01-25", "weight": 92.3, "rolling_avg": 92.8}, {"date": "2026-01-26", "weight": 91.4, "rolling_avg": 92.5}, {"date": "2026-01-27", "weight": 92.3, "rolling_avg": 92.4}, {"date": "2026-01-28", "weight": 92.3, "rolling_avg": 92.4}, {"date": "2026-01-29", "weight": 92.4, "rolling_avg": 92.3}, {"date": "2026-01-31", "weight": 91.5, "rolling_avg": 92.1}, {"date": "2026-02-01", "weight": 91.0, "rolling_avg": 92.0}, {"date": "2026-02-02", "weight": 92.3, "rolling_avg": 91.9}, {"date": "2026-02-03", "weight": 91.7, "rolling_avg": 91.9}, {"date": "2026-02-04", "weight": 91.8, "rolling_avg": 91.9}, {"date": "2026-02-06", "weight": 92.3, "rolling_avg": 91.9}, {"date": "2026-02-07", "weight": 90.6, "rolling_avg": 91.7}, {"date": "2026-02-08", "weight": 91.8, "rolling_avg": 91.6}, {"date": "2026-02-09", "weight": 91.7, "rolling_avg": 91.6}, {"date": "2026-02-10", "weight": 92.1, "rolling_avg": 91.7}, {"date": "2026-02-12", "weight": 91.4, "rolling_avg": 91.7}, {"date": "2026-02-13", "weight": 91.1, "rolling_avg": 91.6}, {"date": "2026-02-14", "weight": 92.1, "rolling_avg": 91.6}, {"date": "2026-02-15", "weight": 92.1, "rolling_avg": 91.7}, {"date": "2026-02-16", "weight": 91.6, "rolling_avg": 91.6}];
 
         // Weight Chart
         let weightChart;
