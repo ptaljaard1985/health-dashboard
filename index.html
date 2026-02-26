@@ -18,7 +18,7 @@
         <!-- Header -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold mb-2">Health Dashboard</h1>
-            <p class="text-gray-400">Last updated: 2026-02-26 04:44</p>
+            <p class="text-gray-400">Last updated: 2026-02-26 06:46</p>
         </div>
 
         <!-- AI Summary -->
@@ -31,7 +31,7 @@
                 <span id="summary-toggle" class="text-gray-400">▶</span>
             </div>
             <div id="summary-content" class="mt-4 text-gray-300 leading-relaxed space-y-3" style="display: none;">
-                <p>Your activity levels this past week were a bit low, with only 2 total workouts completed instead of the 7 that were recommended. The mix of activities was also skewed more towards cardiovascular work, with no strength training sessions. This imbalance could slow your overall progress, so it's important to prioritize the full weekly workout plan going forward.</p><p>Over the past 30 days, your activity levels have been more consistent, with 21 total workouts completed. The mix of activities has been good, incorporating a variety of cardio and strength training. However, you're still slightly behind the monthly goals, so maintaining this level of consistency will be crucial.</p><p>Your weight progress so far has been excellent, with a total loss of 6.3 kg in the 56 days since January 1st. This puts you on track to reach your target of 82 kg by the end of the year, as the current pace of 0.79 kg per week is slightly above the 1.5-2 kg per month target. Keep up the great work, and let me know if you have any other questions.</p>
+                <p>The last week has shown some room for improvement in your activity balance. While you completed 2 out of the 4 planned cardio sessions, you missed all 3 of your scheduled strength training workouts. This imbalance could slow your progress, so it's important to prioritize a more consistent strength routine going forward.</p><p>Over the past 30 days, your activity mix has been more diverse, with a good mix of indoor cycling, tennis, kettlebells, and even a trail run. This variety is great for maintaining engagement and targeting different muscle groups. However, you're still slightly behind on your monthly goals, so you may need to increase your workout frequency to stay on track.</p><p>Your weight progress has been steady, with a total loss of 6.3 kg in the 56 days since January 1st. This translates to a loss rate of 0.79 kg per week, which is within the target range of 1.5-2 kg per month. If you can maintain this pace, you're on track to reach your goal weight of 82 kg by the end of the year.</p>
             </div>
         </div>
 
@@ -797,7 +797,7 @@
         }
 
         // Calendar functionality
-        const exerciseDates = ["2026-02-05", "2026-01-21", "2026-02-11", "2026-01-19", "2026-01-15", "2026-02-02", "2026-01-31", "2026-01-09", "2026-02-10", "2026-01-20", "2026-02-07", "2026-01-29", "2026-01-26", "2026-02-03", "2026-01-12", "2026-02-18", "2026-02-12", "2026-01-07", "2026-02-01", "2026-01-24", "2026-01-11", "2026-01-14", "2026-01-18", "2026-01-13", "2026-02-14", "2026-02-23", "2026-01-25", "2026-01-17", "2026-02-16", "2026-02-09", "2026-01-08", "2026-01-22", "2026-01-01", "2026-02-19", "2026-01-10", "2026-01-28", "2026-02-04", "2026-02-08"];
+        const exerciseDates = ["2026-01-31", "2026-01-09", "2026-01-08", "2026-02-07", "2026-01-21", "2026-02-23", "2026-02-12", "2026-02-03", "2026-01-20", "2026-01-13", "2026-01-28", "2026-02-16", "2026-02-10", "2026-01-19", "2026-01-15", "2026-02-08", "2026-01-14", "2026-01-29", "2026-02-02", "2026-02-11", "2026-02-01", "2026-01-12", "2026-01-11", "2026-01-18", "2026-01-07", "2026-01-22", "2026-02-05", "2026-02-19", "2026-01-10", "2026-01-01", "2026-02-18", "2026-02-04", "2026-01-25", "2026-01-24", "2026-02-09", "2026-01-17", "2026-01-26", "2026-02-14"];
         let currentCalendarDate = new Date();
 
         function renderCalendar() {
