@@ -25,6 +25,7 @@ jobs:
         env:
           GARMIN_EMAIL: ${{ secrets.GARMIN_EMAIL }}
           GARMIN_PASSWORD: ${{ secrets.GARMIN_PASSWORD }}
+          GARMINTOKENS: ${{ secrets.GARMINTOKENS }}
         run: python garmin_notion_sync.py
 
       - name: Generate dashboard
@@ -42,3 +43,21 @@ jobs:
           git add health.db dashboard.html index.html
           git diff --staged --quiet || git commit -m "Auto-sync: update health data and dashboard"
           git push
+
+      - name: Notify on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          python -c "
+          import os, requests
+          token = os.environ['TELEGRAM_BOT_TOKEN']
+          chat_id = os.environ['TELEGRAM_CHAT_ID']
+          run_url = 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+          msg = '⚠️ <b>Sync workflow failed</b>\n\nThe Garmin sync or dashboard generation failed.\n\n<a href=\"' + run_url + '\">View workflow run</a>'
+          requests.post(
+              f'https://api.telegram.org/bot{token}/sendMessage',
+              json={'chat_id': chat_id, 'text': msg, 'parse_mode': 'HTML'}
+          )
+          "

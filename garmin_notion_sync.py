@@ -10,6 +10,7 @@ Created: February 2026
 
 import os
 import sys
+import time
 import logging
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
@@ -94,21 +95,34 @@ SKIP_ACTIVITY_TYPES = [
 class GarminClient:
     """Handles Garmin Connect API interactions."""
 
-    def __init__(self, email: str, password: str):
+    def __init__(self, email, password, tokenstore=None):
         self.email = email
         self.password = password
+        self.tokenstore = tokenstore
         self.client = None
 
-    def connect(self) -> bool:
-        """Authenticate with Garmin Connect."""
-        try:
-            self.client = Garmin(self.email, self.password)
-            self.client.login()
-            logger.info("Successfully connected to Garmin Connect")
-            return True
-        except Exception as e:
-            logger.error(f"Failed to connect to Garmin: {e}")
-            return False
+    def connect(self, retries=3) -> bool:
+        """Authenticate with Garmin Connect with retry logic.
+
+        Supports token-based auth via GARMINTOKENS env var (preferred for CI)
+        and falls back to email/password with exponential backoff retries.
+        """
+        for attempt in range(1, retries + 1):
+            try:
+                self.client = Garmin(self.email, self.password)
+                self.client.login(tokenstore=self.tokenstore)
+                logger.info("Successfully connected to Garmin Connect")
+                return True
+            except Exception as e:
+                logger.warning(f"Garmin login attempt {attempt}/{retries} failed: {e}")
+                if attempt < retries:
+                    wait = 2 ** attempt
+                    logger.info(f"Retrying in {wait}s...")
+                    time.sleep(wait)
+                else:
+                    logger.error(f"All {retries} login attempts failed. Last error: {e}")
+                    return False
+        return False
 
     def get_activities(self, days: int = 7) -> list:
         """Fetch activities from the last N days."""
@@ -269,16 +283,17 @@ def sync_garmin():
     logger.info("=" * 60)
 
     # Validate configuration
-    if not all([GARMIN_EMAIL, GARMIN_PASSWORD]):
+    tokenstore = os.getenv('GARMINTOKENS')
+    if not tokenstore and not all([GARMIN_EMAIL, GARMIN_PASSWORD]):
         logger.error("Missing required environment variables. Check your .env file.")
-        logger.error("Required: GARMIN_EMAIL, GARMIN_PASSWORD")
+        logger.error("Required: GARMIN_EMAIL + GARMIN_PASSWORD, or GARMINTOKENS")
         sys.exit(1)
 
     # Initialise database
     init_db()
 
     # Connect to Garmin
-    garmin = GarminClient(GARMIN_EMAIL, GARMIN_PASSWORD)
+    garmin = GarminClient(GARMIN_EMAIL, GARMIN_PASSWORD, tokenstore=tokenstore)
     if not garmin.connect():
         logger.error("Failed to connect to Garmin. Exiting.")
         sys.exit(1)
