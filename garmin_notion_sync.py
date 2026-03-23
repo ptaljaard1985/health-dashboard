@@ -10,6 +10,8 @@ Created: February 2026
 
 import os
 import sys
+import json
+import base64
 import logging
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
@@ -40,6 +42,9 @@ GARMIN_PASSWORD = os.getenv('GARMIN_PASSWORD')
 
 # Sync Settings
 DAYS_TO_SYNC = int(os.getenv('DAYS_TO_SYNC', '7'))  # How many days back to sync
+
+# Token persistence directory
+GARMIN_TOKENS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.garmin_tokens')
 
 # =============================================================================
 # ACTIVITY TYPE MAPPING
@@ -99,15 +104,72 @@ class GarminClient:
         self.password = password
         self.client = None
 
+    def _restore_tokens_from_env(self):
+        """Restore saved tokens from GARMIN_TOKENS env var (base64-encoded JSON)."""
+        tokens_b64 = os.getenv('GARMIN_TOKENS')
+        if not tokens_b64:
+            return False
+        try:
+            tokens_data = json.loads(base64.b64decode(tokens_b64))
+            os.makedirs(GARMIN_TOKENS_DIR, exist_ok=True)
+            for filename, content in tokens_data.items():
+                with open(os.path.join(GARMIN_TOKENS_DIR, filename), 'w') as f:
+                    json.dump(content, f)
+            logger.info("Restored tokens from GARMIN_TOKENS env var")
+            return True
+        except Exception as e:
+            logger.warning(f"Failed to restore tokens from env: {e}")
+            return False
+
+    def _save_tokens(self):
+        """Save current session tokens to disk."""
+        try:
+            self.client.garth.dump(GARMIN_TOKENS_DIR)
+            logger.info(f"Saved session tokens to {GARMIN_TOKENS_DIR}")
+        except Exception as e:
+            logger.warning(f"Failed to save tokens: {e}")
+
+    def _export_tokens_b64(self):
+        """Export tokens as base64 for storing in GitHub Secrets."""
+        try:
+            tokens_data = {}
+            for filename in ['oauth1_token.json', 'oauth2_token.json']:
+                filepath = os.path.join(GARMIN_TOKENS_DIR, filename)
+                if os.path.exists(filepath):
+                    with open(filepath, 'r') as f:
+                        tokens_data[filename] = json.load(f)
+            b64 = base64.b64encode(json.dumps(tokens_data).encode()).decode()
+            logger.info("Exported tokens as base64 (use this to update GARMIN_TOKENS secret)")
+            return b64
+        except Exception as e:
+            logger.warning(f"Failed to export tokens: {e}")
+            return None
+
     def connect(self) -> bool:
-        """Authenticate with Garmin Connect."""
+        """Authenticate with Garmin Connect, using saved tokens if available."""
+        # Try to restore tokens from env var (for CI)
+        self._restore_tokens_from_env()
+
+        # Try resuming with saved tokens first
+        if os.path.exists(GARMIN_TOKENS_DIR):
+            try:
+                self.client = Garmin(self.email, self.password)
+                self.client.login(tokenstore=GARMIN_TOKENS_DIR)
+                logger.info("Resumed Garmin session from saved tokens")
+                self._save_tokens()
+                return True
+            except Exception as e:
+                logger.warning(f"Token resume failed, will try fresh login: {e}")
+
+        # Fall back to fresh login
         try:
             self.client = Garmin(self.email, self.password)
             self.client.login()
-            logger.info("Successfully connected to Garmin Connect")
+            logger.info("Successfully connected to Garmin Connect (fresh login)")
+            self._save_tokens()
             return True
         except Exception as e:
-            logger.error(f"Failed to connect to Garmin: {e}")
+            logger.error(f"Login failed: {e}")
             return False
 
     def get_activities(self, days: int = 7) -> list:

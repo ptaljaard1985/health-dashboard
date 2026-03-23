@@ -4,3 +4,4 @@ migrate_from_notion.py
 __pycache__/
 *.pyc
 *.plist
+.garmin_tokens/
