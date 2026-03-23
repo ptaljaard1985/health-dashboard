@@ -2,7 +2,7 @@ name: Sync Garmin & Update Dashboard
 
 on:
   schedule:
-    - cron: '0 */3 * * *'  # Every 3 hours UTC
+    - cron: '0 */12 * * *'  # Every 12 hours UTC (02:00 and 14:00 SAST)
   workflow_dispatch:  # Manual trigger from Actions tab
 
 jobs:
