@@ -63,10 +63,10 @@ GARMIN_TO_TYPE = {
     'casual_walking': 'Walk',
 
     # Cycling
-    'cycling': 'Indoor Cycle',  # Adjust if you add outdoor cycling
-    'indoor_cycling': 'Indoor Cycle',
-    'virtual_ride': 'Indoor Cycle',
-    'mountain_biking': 'Mountain Bike',
+    'cycling': 'Cycle',
+    'indoor_cycling': 'Cycle',
+    'virtual_ride': 'Cycle',
+    'mountain_biking': 'Cycle',
 
     # Strength
     'strength_training': 'Kettlebells',
