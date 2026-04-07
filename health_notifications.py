@@ -35,7 +35,7 @@ REST_DAY_WARNING = 2
 REST_DAY_URGENT = 3
 WEIGHIN_REMINDER_DAYS = 3
 
-CARDIO_TYPES = {'Run', 'Walk', 'Indoor Cycle', 'Hike', 'Trail Run', 'Rucking', 'Padel', 'Tennis', 'Golf'}
+CARDIO_TYPES = {'Run', 'Walk', 'Indoor Cycle', 'Hike', 'Trail Run', 'Rucking', 'Padel', 'Tennis', 'Golf', 'Mountain Bike'}
 
 
 def send_telegram(message):

@@ -66,6 +66,7 @@ GARMIN_TO_TYPE = {
     'cycling': 'Indoor Cycle',  # Adjust if you add outdoor cycling
     'indoor_cycling': 'Indoor Cycle',
     'virtual_ride': 'Indoor Cycle',
+    'mountain_biking': 'Mountain Bike',
 
     # Strength
     'strength_training': 'Kettlebells',
